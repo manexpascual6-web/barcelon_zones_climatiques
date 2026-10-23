@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Dashboard académico para explorar refugios climáticos y su distribución por distrito en Barcelona.">
+<title>Barcelona fresca i verda | Dashboard</title>
+<style>
+:root{--ink:#172b3a;--muted:#586b78;--bg:#f4f7f7;--card:#fff;--line:#dce5e6;--teal:#147d82;--teal2:#d8eeee;--yellow:#f4c95d;--shadow:0 10px 30px rgba(18,53,61,.07)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.5}
+header{background:linear-gradient(125deg,#163b4a,#147d82);color:#fff;padding:42px 24px 34px}.wrap{max-width:1140px;margin:0 auto}.eyebrow{font-size:.78rem;text-transform:uppercase;letter-spacing:.14em;font-weight:750;color:#d1f1ed}.hero{display:flex;gap:30px;justify-content:space-between;align-items:end}.hero h1{font-size:clamp(2rem,4vw,3.1rem);line-height:1.05;max-width:740px;margin:12px 0 14px}.hero p{max-width:700px;color:#e0f4f1;margin:0}.tag{align-self:start;border:1px solid #8cd2cc;border-radius:99px;padding:7px 12px;font-weight:650;font-size:.8rem;white-space:nowrap}
+main{padding:26px 24px 56px}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:20px}.kpi-label{color:var(--muted);font-size:.88rem}.kpi-value{font-size:2rem;font-weight:800;letter-spacing:-.04em;margin-top:3px}.kpi-note{font-size:.82rem;color:var(--muted);margin-top:4px}.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px;margin-top:18px}.section-title{font-size:1.15rem;margin:0 0 5px}.sub{font-size:.91rem;color:var(--muted);margin:0 0 17px}.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}.toolbar input,.toolbar select{font:inherit;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff;color:var(--ink)}.toolbar input{flex:1;min-width:160px}.toolbar button{border:0;border-radius:10px;background:var(--teal);color:white;padding:10px 14px;font-weight:700;cursor:pointer}.chart-row{display:grid;grid-template-columns:145px 1fr 60px;gap:10px;align-items:center;margin:12px 0}.district{font-size:.86rem}.track{height:13px;border-radius:99px;background:#edf1f2;overflow:hidden}.bar{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--teal),#59b6ad);width:0;transition:width .3s}.count{font-variant-numeric:tabular-nums;text-align:right;font-weight:750;font-size:.9rem}.table-wrap{overflow:auto}.table{border-collapse:collapse;width:100%;font-size:.9rem}.table th,.table td{text-align:left;padding:11px 10px;border-bottom:1px solid var(--line);white-space:nowrap}.table th{background:#f6f9f9;color:var(--muted);font-size:.76rem;text-transform:uppercase;letter-spacing:.04em}.table td:not(:first-child),.table th:not(:first-child){text-align:right;font-variant-numeric:tabular-nums}.callout{margin-top:18px;border-left:4px solid var(--yellow);background:#fff9e8;border-radius:8px;padding:14px 16px;color:#57451b;font-size:.92rem}.pill{display:inline-block;border-radius:99px;padding:4px 9px;font-size:.76rem;font-weight:700;background:var(--teal2);color:#155d60;margin-bottom:9px}.steps{display:grid;gap:12px}.step{display:flex;gap:12px}.num{flex:0 0 30px;height:30px;border-radius:9px;background:var(--teal2);color:#155d60;font-weight:800;display:grid;place-items:center}.step p{margin:0;color:var(--muted);font-size:.91rem}.step strong{color:var(--ink);display:block;margin-bottom:2px}.sources a{color:var(--teal);font-weight:650}.sources li{margin:8px 0;font-size:.9rem}.small{font-size:.82rem;color:var(--muted)}footer{padding:22px 24px;border-top:1px solid var(--line);font-size:.84rem;color:var(--muted)}.empty{padding:18px;color:var(--muted);text-align:center}
+@media(max-width:850px){.hero{display:block}.tag{display:inline-block;margin-top:20px}.kpis{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.chart-row{grid-template-columns:125px 1fr 48px}}@media(max-width:470px){.kpis{grid-template-columns:1fr 1fr}.card{padding:15px}.chart-row{grid-template-columns:105px 1fr 44px;gap:7px}.district{font-size:.78rem}.kpi-value{font-size:1.5rem}}
+</style>
+</head>
+<body>
+<header><div class="wrap hero"><div>
+<div class="eyebrow">Projecte urbà · Barcelona · 2026/27</div>
+<h1>Barcelona fresca<br>i verda.</h1>
+<p>Una primera lectura de la distribución de refugios climáticos, normalizada con población por distrito, para preparar un diagnóstico más completo de protección frente al calor.</p>
+</div><div class="tag">Prototipo académico · v1.1</div></div></header>
+<main class="wrap">
+<section class="kpis" aria-label="Indicadores principales">
+  <article class="card"><div class="kpi-label">Registros de refugios</div><div class="kpi-value" id="total">538</div><div class="kpi-note">Recuento agregado consultado</div></article>
+  <article class="card"><div class="kpi-label">Distritos con registros</div><div class="kpi-value" id="districts">10 / 10</div><div class="kpi-note">Presencia en todos los distritos</div></article>
+  <article class="card"><div class="kpi-label">Máximo por 10.000 hab.</div><div class="kpi-value" id="maxrate">4,76</div><div class="kpi-note" id="maxdistrict">Sant Andreu</div></article>
+  <article class="card"><div class="kpi-label">Mínimo por 10.000 hab.</div><div class="kpi-value" id="minrate">2,47</div><div class="kpi-note" id="mindistrict">Sarrià-Sant Gervasi</div></article>
+</section>
+<div class="grid">
+<section class="card">
+<div class="pill">01 · Comparación territorial</div>
+<h2 class="section-title">Refugios climáticos por distrito</h2>
+<p class="sub">Cambia entre recuento absoluto y ratio por 10.000 residentes. La ratio usa población del padrón municipal a 1/1/2025.</p>
+<div class="toolbar"><input id="search" type="search" placeholder="Buscar distrito…" aria-label="Buscar distrito">
+<select id="metric" aria-label="Indicador"><option value="rate">Por 10.000 habitantes</option><option value="count">Recuento absoluto</option></select>
+<select id="sort" aria-label="Ordenar"><option value="desc">Mayor valor primero</option><option value="asc">Menor valor primero</option><option value="name">Nombre A–Z</option></select><button id="download">Descargar CSV</button></div>
+<div id="chart" aria-label="Gráfico de barras por distrito"></div>
+<div class="callout"><strong>Interpretación responsable.</strong> La ratio mejora la comparación frente al recuento bruto, pero no mide distancia peatonal, horarios ni capacidad, y tampoco representa el riesgo térmico. Para priorizar actuaciones hay que integrar arbolado, zonas verdes, exposición al calor y vulnerabilidad.</div>
+</section>
+<section class="card">
+<div class="pill">02 · Lectura inicial</div>
+<h2 class="section-title">Qué sugiere esta capa</h2>
+<p class="sub">Resultados descriptivos que deben contrastarse con datos espaciales y sociales.</p>
+<div class="steps">
+<div class="step"><div class="num">1</div><div><strong>Hay registros en los 10 distritos</strong><p>El recuento agregado de la red muestra presencia en todos los distritos.</p></div></div>
+<div class="step"><div class="num">2</div><div><strong>La ratio no coincide con el recuento</strong><p>Sant Andreu y Ciutat Vella quedan en la parte alta por refugios por residente; Sarrià-Sant Gervasi queda en la parte baja del indicador.</p></div></div>
+<div class="step"><div class="num">3</div><div><strong>La ratio es orientativa</strong><p>Compara el recuento consultado con el padrón a 1/1/2025; hay que validar fechas y registros antes de presentar resultados definitivos.</p></div></div>
+<div class="step"><div class="num">4</div><div><strong>La prioridad requiere varias capas</strong><p>Proponer intervenciones donde coincidan exposición al calor, vulnerabilidad y baja accesibilidad a espacios frescos.</p></div></div>
+</div>
+<hr style="border:0;border-top:1px solid var(--line);margin:22px 0">
+<h2 class="section-title">Fuentes y metodología</h2>
+<ul class="sources">
+<li><a href="https://opendata-ajuntament.barcelona.cat/data/es/dataset/xarxa-refugis-climatics" target="_blank" rel="noreferrer">Ajuntament de Barcelona · Red de refugios climáticos</a> — fuente original del conjunto.</li>
+<li><a href="https://bcndades.cat/mirada-llarga/" target="_blank" rel="noreferrer">BCNDades · Mirada llarga</a> — recuento por distrito derivado del JSON oficial consultado.</li>
+<li><a href="https://www.barcelona.cat/cesb/sites/default/files/2025-09/Mem%C3%B2ria%20Socioecon%C3%B2mica%20de%20Barcelona%202024_0.pdf" target="_blank" rel="noreferrer">Población por distrito, padrón a 1/1/2025</a> — tabla municipal reproducida en la Memòria Socioeconòmica 2024.</li>
+<li><a href="https://datos.gob.es/es/catalogo/l01080193-unidades-administrativas-de-la-ciudad-de-barcelona" target="_blank" rel="noreferrer">Datos.gob.es · Unidades administrativas</a> — referencia para límites de distritos y barrios (pendiente de integrar).</li>
+<li><a href="https://datos.gob.es/es/catalogo/l01080193-arbolado-viario-de-la-ciudad-de-barcelona" target="_blank" rel="noreferrer">Datos.gob.es · Arbolado viario</a> — capa complementaria pendiente de integrar.</li>
+</ul>
+<p class="small">Consulta del recuento agregado: 23/10/2026. Población: padrón a 1/1/2025. Las fuentes no son necesariamente de la misma fecha; la tasa es orientativa y debe recalcularse con la descarga original definitiva.</p>
+</section>
+</div>
+<div class="grid">
+<section class="card">
+<div class="pill">03 · Tabla</div>
+<h2 class="section-title">Detalle por distrito</h2>
+<p class="sub">Incluye habitantes de padrón y la ratio para permitir la comprobación del cálculo.</p>
+<div class="table-wrap"><table class="table"><thead><tr><th>Distrito</th><th>Registros</th><th>Población 2025</th><th>Por 10.000 hab.</th></tr></thead><tbody id="tablebody"></tbody></table></div>
+</section>
+<section class="card">
+<div class="pill">04 · Siguiente iteración</div>
+<h2 class="section-title">Qué falta para responder al reto</h2>
+<div class="steps">
+<div class="step"><div class="num">A</div><div><strong>Arbolado y zonas verdes</strong><p>Incorporar capas municipales y calcular indicadores por distrito/barrio.</p></div></div>
+<div class="step"><div class="num">B</div><div><strong>Población vulnerable</strong><p>Incluir edad y otros indicadores adecuados a una escala geográfica compatible, evitando inferencias individuales.</p></div></div>
+<div class="step"><div class="num">C</div><div><strong>Accesibilidad peatonal</strong><p>Calcular distancia/tiempo a pie y revisar horarios efectivos de apertura.</p></div></div>
+<div class="step"><div class="num">D</div><div><strong>Priorización transparente</strong><p>Construir un indicador compuesto explicado y verificar los barrios candidatos con datos originales.</p></div></div>
+</div>
+</section>
+</div>
+</main>
+<footer><div class="wrap">Proyecto académico · Gestión de Proyectos · UAB · Datos de origen municipal con condiciones que deben atribuirse (consulta los términos de cada conjunto, incluida la licencia CC BY 4.0 cuando aplique). Este prototipo no sustituye un análisis oficial de riesgo térmico.</div></footer>
+<script>
+const data = [{"district": "Sant Andreu", "count": 75, "population_2025": 157674, "rate_per_10000": 4.76}, {"district": "Eixample", "count": 74, "population_2025": 278209, "rate_per_10000": 2.66}, {"district": "Sant Martí", "count": 71, "population_2025": 253139, "rate_per_10000": 2.8}, {"district": "Sants-Montjuïc", "count": 58, "population_2025": 196300, "rate_per_10000": 2.95}, {"district": "Nou Barris", "count": 56, "population_2025": 182755, "rate_per_10000": 3.06}, {"district": "Ciutat Vella", "count": 54, "population_2025": 115311, "rate_per_10000": 4.68}, {"district": "Horta-Guinardó", "count": 48, "population_2025": 183009, "rate_per_10000": 2.62}, {"district": "Sarrià-Sant Gervasi", "count": 38, "population_2025": 153673, "rate_per_10000": 2.47}, {"district": "Gràcia", "count": 36, "population_2025": 127603, "rate_per_10000": 2.82}, {"district": "Les Corts", "count": 28, "population_2025": 84393, "rate_per_10000": 3.32}];
+const fmt = n => new Intl.NumberFormat('es-ES').format(n);
+const fmtRate = n => new Intl.NumberFormat('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n);
+const total = data.reduce((s,d)=>s+d.count,0);
+const byRate = [...data].sort((a,b)=>b.rate_per_10000-a.rate_per_10000);
+document.getElementById('total').textContent = fmt(total);
+document.getElementById('districts').textContent = `${data.length} / ${data.length}`;
+document.getElementById('maxrate').textContent = fmtRate(byRate[0].rate_per_10000);
+document.getElementById('maxdistrict').textContent = byRate[0].district;
+document.getElementById('minrate').textContent = fmtRate(byRate[byRate.length-1].rate_per_10000);
+document.getElementById('mindistrict').textContent = byRate[byRate.length-1].district;
+const chart = document.getElementById('chart'), body = document.getElementById('tablebody');
+function render(){
+  const q = document.getElementById('search').value.trim().toLocaleLowerCase('es');
+  const order = document.getElementById('sort').value;
+  const metric = document.getElementById('metric').value;
+  let arr = data.filter(d=>d.district.toLocaleLowerCase('es').includes(q));
+  const val = d => metric==='rate' ? d.rate_per_10000 : d.count;
+  if(order==='desc') arr.sort((a,b)=>val(b)-val(a));
+  else if(order==='asc') arr.sort((a,b)=>val(a)-val(b));
+  else arr.sort((a,b)=>a.district.localeCompare(b.district,'es'));
+  chart.innerHTML=''; body.innerHTML='';
+  if(!arr.length){chart.innerHTML='<div class="empty">No hay distritos que coincidan con la búsqueda.</div>';body.innerHTML='<tr><td colspan="4">Sin resultados</td></tr>';return;}
+  const max = Math.max(...data.map(val));
+  arr.forEach(d=>{
+    const row=document.createElement('div');row.className='chart-row';
+    const name=document.createElement('div');name.className='district';name.textContent=d.district;
+    const track=document.createElement('div');track.className='track';
+    const bar=document.createElement('div');bar.className='bar';bar.style.width=(val(d)/max*100)+'%';track.appendChild(bar);
+    const count=document.createElement('div');count.className='count';count.textContent=metric==='rate'?fmtRate(val(d)):fmt(val(d));
+    row.append(name,track,count);chart.appendChild(row);
+    const tr=document.createElement('tr');
+    [d.district,fmt(d.count),fmt(d.population_2025),fmtRate(d.rate_per_10000)].forEach((v,i)=>{const td=document.createElement('td');td.textContent=v;tr.appendChild(td);});
+    body.appendChild(tr);
+  });
+}
+document.getElementById('search').addEventListener('input',render);
+document.getElementById('sort').addEventListener('change',render);
+document.getElementById('metric').addEventListener('change',render);
+document.getElementById('download').addEventListener('click',()=>{
+  const rows=[['districte','refugis_registrats','poblacio_padro_2025','refugis_per_10000_habitants'],...data.map(d=>[d.district,d.count,d.population_2025,fmtRate(d.rate_per_10000)])];
+  const content=rows.map(r=>r.map(v=>'"'+String(v).replaceAll('"','""')+'"').join(';')).join('\r\n');
+  const blob=new Blob(['\ufeff'+content],{type:'text/csv;charset=utf-8;'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='refugis_per_districte.csv';a.click();URL.revokeObjectURL(a.href);
+});
+render();
+</script></body></html>
